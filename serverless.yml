@@ -19,6 +19,7 @@ provider:
 
   environment:
     EMPLOYEES_TABLE: ${self:custom.tableName}
+    STAGE: ${env:STAGE, 'dev'}
   iam:
     role:
       statements:
