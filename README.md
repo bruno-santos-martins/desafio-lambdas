@@ -13,39 +13,41 @@ Projeto Serverless em Node.js para gerenciar Funcionários (CRUD) com AWS Lambda
 - Testes unitários com Jest
 
 ## Arquitetura (Clean Architecture)
+
 ```
 src/
-	domain/
-		entities/
-			Employee.js
-		repositories/
-			EmployeeRepository.js
-
 	application/
 		use-cases/
-			createEmployee.js
-			getEmployee.js
-			updateEmployee.js
-			deleteEmployee.js
-
+			createEmployee.ts
+			deleteEmployee.ts
+			getEmployee.ts
+			updateEmployee.ts
+	domain/
+		entities/
+			Employee.ts
+		repositories/
+			EmployeeRepository.ts
 	infra/
 		db/
-			DynamoEmployeeRepository.js
+			DynamoEmployeeRepository.ts
 		lambda/
 			handlers/
-				create.js
-				get.js
-				update.js
-				delete.js
-
+				create.ts
+				delete.ts
+				get.ts
+				update.ts
+			utils/
+				corsResponse.ts
+				errorResponse.ts
 tests/
-	employee.test.js
-
+	employee.test.ts
 serverless.yml
 package.json
+tsconfig.json
 jest.config.js
 .env.example
 .env (local)
+README.md
 ```
 
 Camadas:
@@ -80,34 +82,32 @@ STAGE=dev
 ```
 O nome da tabela é gerado como `${service}-${stage}-employees` por padrão.
 
-## Instalação
-```powershell
-npm install
+
+## Instalação e Uso
+
+1. Instale as dependências:
+```bash
+yarn install
 ```
 
-## Executar localmente
-Este projeto usa o `serverless-offline` para simular API Gateway/Lambda. Por padrão, o repositório de dados é o DynamoDB na AWS (não há Dynamo local configurado neste boilerplate). Para testes de lógica sem AWS, use os testes unitários (repositório em memória).
-
-Inicie o offline:
-```powershell
-npx serverless offline
+2. Execute os testes:
+```bash
+yarn test
 ```
 
-## Deploy
-Crie os recursos (Lambda, API Gateway, DynamoDB) na AWS:
-```powershell
-npx serverless deploy
+3. Rode localmente com Serverless Offline:
+```bash
+yarn offline
+```
+
+4. Faça deploy para AWS:
+```bash
+yarn deploy
 ```
 
 Remover recursos:
-```powershell
-npx serverless remove
-```
-
-## Testes
-Rode os testes unitários (use-cases com repositório em memória):
-```powershell
-npm test
+```bash
+yarn remove
 ```
 
 ## Observações
