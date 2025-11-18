@@ -109,8 +109,3 @@ Remover recursos:
 ```bash
 yarn remove
 ```
-
-## Observações
-- O AWS SDK v2 já está disponível no ambiente Lambda, então não há bundle extra.
-- Validações básicas são feitas nos casos de uso e entidade.
-- CORS habilitado nas respostas dos handlers.
