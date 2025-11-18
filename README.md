@@ -114,8 +114,3 @@ yarn remove
 - O AWS SDK v2 já está disponível no ambiente Lambda, então não há bundle extra.
 - Validações básicas são feitas nos casos de uso e entidade.
 - CORS habilitado nas respostas dos handlers.
-
-## Próximos passos (opcionais)
-- Adicionar `serverless-dynamodb-local` para desenvolvimento 100% local.
-- Adicionar rota de listagem e paginação.
-- Observabilidade (logs estruturados, métricas) e camadas Lambda.
