@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Desafio Lambdas - Funcionários API
+  description: API Serverless para CRUD de funcionários (Node.js, TypeScript, AWS Lambda, DynamoDB)
+  version: 1.0.0
+servers:
+  - url: https://{apiId}.execute-api.{region}.amazonaws.com/{stage}
+    variables:
+      apiId:
+        default: seu-api-id
+      region:
+        default: us-east-1
+      stage:
+        default: dev
+paths:
+  /employees:
+    post:
+      summary: Criar funcionário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeInput'
+      responses:
+        '201':
+          description: Funcionário criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          description: Dados inválidos
+        '409':
+          description: Funcionário já existe
+  /employees/{id}:
+    get:
+      summary: Buscar funcionário por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Funcionário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '404':
+          description: Funcionário não encontrado
+    put:
+      summary: Atualizar funcionário
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdate'
+      responses:
+        '200':
+          description: Funcionário atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Funcionário não encontrado
+    delete:
+      summary: Remover funcionário
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Funcionário removido
+        '404':
+          description: Funcionário não encontrado
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        cargo:
+          type: string
+        idade:
+          type: integer
+      required:
+        - id
+        - nome
+        - cargo
+        - idade
+    EmployeeInput:
+      type: object
+      properties:
+        nome:
+          type: string
+        cargo:
+          type: string
+        idade:
+          type: integer
+      required:
+        - nome
+        - cargo
+        - idade
+    EmployeeUpdate:
+      type: object
+      properties:
+        nome:
+          type: string
+        cargo:
+          type: string
+        idade:
+          type: integer
