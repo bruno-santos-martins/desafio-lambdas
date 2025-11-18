@@ -1,8 +1,10 @@
-import AWS from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, GetCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import type Employee from '../../domain/entities/Employee';
 import EmployeeRepository, { type EmployeeUpdate } from '../../domain/repositories/EmployeeRepository';
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
 
 export default class DynamoEmployeeRepository extends EmployeeRepository {
   private employeeTableName: string;
@@ -14,24 +16,24 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
   }
 
   async create(employeeData: Employee): Promise<Employee> {
-    await docClient
-      .put({
+    await docClient.send(
+      new PutCommand({
         TableName: this.employeeTableName,
         Item: employeeData,
         ConditionExpression: 'attribute_not_exists(#id)',
         ExpressionAttributeNames: { '#id': 'id' },
       })
-      .promise();
+    );
     return employeeData;
   }
 
   async getById(employeeId: string): Promise<Employee | null> {
-    const result = await docClient
-      .get({
+    const result = await docClient.send(
+      new GetCommand({
         TableName: this.employeeTableName,
         Key: { id: employeeId },
       })
-      .promise();
+    );
     return (result.Item as Employee) || null;
   }
 
