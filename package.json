@@ -1,0 +1,35 @@
+{
+  "name": "desafio-lambdas",
+  "version": "1.0.0",
+  "description": "Desafio Lambda CRUD de Funcionários com Clean Architecture",
+  "main": "src/infra/lambda/handlers/create.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "build": "tsc -p tsconfig.json",
+    "offline": "serverless offline",
+    "deploy": "serverless deploy",
+    "remove": "serverless remove"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1590.0",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.137",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.12",
+    "@types/uuid": "^9.0.7",
+    "jest": "^29.7.0",
+    "serverless": "^3.40.0",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-esbuild": "^1.54.5",
+    "serverless-offline": "^13.2.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,77 @@
+service: desafio-lambdas
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-esbuild
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${env:STAGE, 'dev'}
+  environment:
+    EMPLOYEES_TABLE: ${self:custom.tableName}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}
+
+custom:
+  tableName: ${self:service}-${sls:stage}-employees
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node18
+    platform: node
+    concurrency: 10
+
+functions:
+  create:
+    handler: src/infra/lambda/handlers/create.handler
+    events:
+      - httpApi:
+          path: /employees
+          method: post
+  get:
+    handler: src/infra/lambda/handlers/get.handler
+    events:
+      - httpApi:
+          path: /employees/{id}
+          method: get
+  update:
+    handler: src/infra/lambda/handlers/update.handler
+    events:
+      - httpApi:
+          path: /employees/{id}
+          method: put
+  delete:
+    handler: src/infra/lambda/handlers/delete.handler
+    events:
+      - httpApi:
+          path: /employees/{id}
+          method: delete
+
+resources:
+  Resources:
+    EmployeesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
