@@ -80,8 +80,6 @@ STAGE=dev
 # EMPLOYEES_TABLE=desafio-lambdas-dev-employees
 # AWS_PROFILE=default
 ```
-O nome da tabela é gerado como `${service}-${stage}-employees` por padrão.
-
 
 ## Instalação e Uso
 
@@ -104,7 +102,6 @@ yarn offline
 ```bash
 yarn deploy
 ```
-
 Remover recursos:
 ```bash
 yarn remove
