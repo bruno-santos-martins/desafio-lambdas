@@ -16,7 +16,7 @@ provider:
   deploymentBucket:
     name: desafio-lambdas-deployment
     serverSideEncryption: AES256
-    
+
   environment:
     EMPLOYEES_TABLE: ${self:custom.tableName}
   iam:
