@@ -67,6 +67,11 @@ Camadas:
 - DELETE `/employees/{id}` — remove funcionário
 	- 204 (sem corpo) | 404 se não encontrado
 
+## Testes e Insomnia
+- Testes unitários: os testes estão em `tests/employee.test.ts` (rodar com `yarn test`).
+- Coleção Insomnia: arquivo `Insomnia_2025-11-18.yaml` na raiz do projeto.
+  - Para usar: abra o Insomnia > Application > Preferences > Data > Import Data > From File e selecione o arquivo.
+
 ## Pré‑requisitos locais
 - Node.js 18+
 - Conta AWS configurada (via `AWS_PROFILE` ou variáveis de ambiente)

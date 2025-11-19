@@ -28365,6 +28365,7 @@ var DynamoEmployeeRepository = class extends EmployeeRepository {
     if (updateExpressions.length === 0) {
       return await this.getById(employeeId);
     }
+    attributeNames["#id"] = "id";
     const result = await docClient.send(
       new import_lib_dynamodb.UpdateCommand({
         TableName: this.employeeTableName,

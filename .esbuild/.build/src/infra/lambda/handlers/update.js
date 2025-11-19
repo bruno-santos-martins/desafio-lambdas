@@ -28365,6 +28365,7 @@ var DynamoEmployeeRepository = class extends EmployeeRepository {
     if (updateExpressions.length === 0) {
       return await this.getById(employeeId);
     }
+    attributeNames["#id"] = "id";
     const result = await docClient.send(
       new import_lib_dynamodb.UpdateCommand({
         TableName: this.employeeTableName,
@@ -28453,6 +28454,7 @@ function response(statusCode, body) {
 var handler = async (event) => {
   const employeeRepository = new DynamoEmployeeRepository();
   try {
+    console.log("Update event:", event);
     const employeeId = event.pathParameters && event.pathParameters.id;
     const updateData = JSON.parse(event.body || "{}");
     const updatedEmployee = await updateEmployee(employeeRepository, employeeId, updateData);

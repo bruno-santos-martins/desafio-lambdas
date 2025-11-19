@@ -14,6 +14,7 @@ function response(statusCode: number, body?: unknown): APIGatewayProxyResult {
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
   const employeeRepository = new DynamoEmployeeRepository();
   try {
+    console.log('Update event:', event);
     const employeeId = event.pathParameters && event.pathParameters.id;
     const updateData = JSON.parse(event.body || '{}');
     const updatedEmployee = await updateEmployee(employeeRepository, employeeId as string, updateData);

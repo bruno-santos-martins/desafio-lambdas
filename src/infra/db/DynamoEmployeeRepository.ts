@@ -110,6 +110,9 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
       return await this.getById(employeeId);
     }
 
+    // Necessário para ConditionExpression usar #id
+    attributeNames['#id'] = 'id';
+
     const result = await docClient.send(
       new UpdateCommand({
         TableName: this.employeeTableName,
