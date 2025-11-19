@@ -28284,6 +28284,21 @@ var DynamoEmployeeRepository = class extends EmployeeRepository {
     if (!employeeTableName) throw new Error("EMPLOYEES_TABLE n\xE3o configurada");
     this.employeeTableName = employeeTableName;
   }
+  async getAll() {
+    let lastKey = void 0;
+    let allItems = [];
+    do {
+      const page = await docClient.send(
+        new import_lib_dynamodb.ScanCommand({
+          TableName: this.employeeTableName,
+          ExclusiveStartKey: lastKey
+        })
+      );
+      allItems = allItems.concat(page.Items ?? []);
+      lastKey = page.LastEvaluatedKey;
+    } while (lastKey);
+    return allItems;
+  }
   async findByNomeCargoIdade(nome, cargo, idade) {
     const nomeSan = String(nome).trim().toLowerCase();
     const cargoSan = String(cargo).trim().toLowerCase();
@@ -28436,9 +28451,25 @@ var handler = async (event) => {
   const employeeRepository = new DynamoEmployeeRepository();
   try {
     const employeeId = event.pathParameters && event.pathParameters.id;
-    const fetchedEmployee = await getEmployee(employeeRepository, employeeId);
-    if (!fetchedEmployee) return response(404, { message: "Funcion\xE1rio n\xE3o encontrado" });
-    return response(200, fetchedEmployee);
+    if (employeeId) {
+      const fetchedEmployee = await getEmployee(employeeRepository, employeeId);
+      if (!fetchedEmployee) return response(404, { message: "Funcion\xE1rio n\xE3o encontrado" });
+      return response(200, fetchedEmployee);
+    } else {
+      const page = event.queryStringParameters && event.queryStringParameters.page ? parseInt(event.queryStringParameters.page, 10) : 1;
+      const limit = event.queryStringParameters && event.queryStringParameters.limit ? parseInt(event.queryStringParameters.limit, 10) : 10;
+      const allEmployees = await employeeRepository.getAll();
+      const total = allEmployees.length;
+      const start = (page - 1) * limit;
+      const paginated = allEmployees.slice(start, start + limit);
+      return response(200, {
+        data: paginated,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      });
+    }
   } catch (err2) {
     return errorResponse(err2);
   }

@@ -15,6 +15,22 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
     this.employeeTableName = employeeTableName;
   }
 
+  async getAll(): Promise<Employee[]> {
+    let lastKey: Record<string, any> | undefined = undefined;
+    let allItems: Employee[] = [];
+    do {
+      const page = await docClient.send(
+        new ScanCommand({
+          TableName: this.employeeTableName,
+          ExclusiveStartKey: lastKey,
+        })
+      );
+      allItems = allItems.concat((page.Items ?? []) as Employee[]);
+      lastKey = page.LastEvaluatedKey as any;
+    } while (lastKey);
+    return allItems;
+  }
+
   async findByNomeCargoIdade(nome: string, cargo: string, idade: number): Promise<Employee | null> {
     // Sanitiza os valores para busca
     const nomeSan = String(nome).trim().toLowerCase();

@@ -56,9 +56,54 @@ class InMemoryEmployeeRepository extends EmployeeRepository {
     }
     this.employeeStore.delete(employeeId);
   }
+  async getAll(): Promise<Employee[]> {
+    return Array.from(this.employeeStore.values());
+  }
 }
 
 describe("Employee use-cases", () => {
+  test("getAll retorna lista vazia se não houver funcionários", async () => {
+    const employeeRepository = new InMemoryEmployeeRepository();
+    const all = await employeeRepository.getAll();
+    expect(Array.isArray(all)).toBe(true);
+    expect(all).toHaveLength(0);
+  });
+
+  test("getAll retorna um funcionário cadastrado", async () => {
+    const employeeRepository = new InMemoryEmployeeRepository();
+    const created = await createEmployee(employeeRepository, {
+      nome: "Lucas",
+      cargo: "DevOps",
+      idade: 29,
+    });
+    const all = await employeeRepository.getAll();
+    expect(all).toHaveLength(1);
+    expect(all[0]).toEqual(created);
+  });
+
+  test("getAll retorna todos os funcionários cadastrados", async () => {
+    const employeeRepository = new InMemoryEmployeeRepository();
+    const emp1 = await createEmployee(employeeRepository, {
+      nome: "Aline",
+      cargo: "PO",
+      idade: 31,
+    });
+    const emp2 = await createEmployee(employeeRepository, {
+      nome: "Rafael",
+      cargo: "Arquiteto",
+      idade: 40,
+    });
+    const emp3 = await createEmployee(employeeRepository, {
+      nome: "Sofia",
+      cargo: "Estagiária",
+      idade: 22,
+    });
+    const all = await employeeRepository.getAll();
+    expect(all).toHaveLength(3);
+    expect(all).toEqual(
+      expect.arrayContaining([emp1, emp2, emp3])
+    );
+  });
   test("should not allow duplicate employee (nome, cargo, idade)", async () => {
     const employeeRepository = new InMemoryEmployeeRepository();
     await createEmployee(employeeRepository, {

@@ -7,4 +7,6 @@ export default abstract class EmployeeRepository {
   abstract getById(id: string): Promise<Employee | null>;
   abstract update(id: string, updates: EmployeeUpdate): Promise<Employee | null>;
   abstract delete(id: string): Promise<void>;
+  abstract getAll(): Promise<Employee[]>;
+  abstract findByNomeCargoIdade(nome: string, cargo: string, idade: number): Promise<Employee | null>;
 }

@@ -55,6 +55,9 @@ functions:
       - httpApi:
           path: /employees/{id}
           method: get
+      - httpApi:
+          path: /employees
+          method: get
   update:
     handler: src/infra/lambda/handlers/update.handler
     events:

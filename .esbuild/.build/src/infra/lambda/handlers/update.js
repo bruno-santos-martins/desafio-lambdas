@@ -28284,6 +28284,21 @@ var DynamoEmployeeRepository = class extends EmployeeRepository {
     if (!employeeTableName) throw new Error("EMPLOYEES_TABLE n\xE3o configurada");
     this.employeeTableName = employeeTableName;
   }
+  async getAll() {
+    let lastKey = void 0;
+    let allItems = [];
+    do {
+      const page = await docClient.send(
+        new import_lib_dynamodb.ScanCommand({
+          TableName: this.employeeTableName,
+          ExclusiveStartKey: lastKey
+        })
+      );
+      allItems = allItems.concat(page.Items ?? []);
+      lastKey = page.LastEvaluatedKey;
+    } while (lastKey);
+    return allItems;
+  }
   async findByNomeCargoIdade(nome, cargo, idade) {
     const nomeSan = String(nome).trim().toLowerCase();
     const cargoSan = String(cargo).trim().toLowerCase();
