@@ -28285,30 +28285,37 @@ var DynamoEmployeeRepository = class extends EmployeeRepository {
     this.employeeTableName = employeeTableName;
   }
   async findByNomeCargoIdade(nome, cargo, idade) {
-    const nomeSan = nome.trim().toLowerCase();
-    const cargoSan = cargo.trim().toLowerCase();
+    const nomeSan = String(nome).trim().toLowerCase();
+    const cargoSan = String(cargo).trim().toLowerCase();
     const idadeSan = Number(idade);
-    const result = await docClient.send(
-      new import_lib_dynamodb.ScanCommand({
-        TableName: this.employeeTableName,
-        FilterExpression: "contains(#nome, :nome) AND contains(#cargo, :cargo) AND #idade = :idade",
-        ExpressionAttributeNames: {
-          "#nome": "nome",
-          "#cargo": "cargo",
-          "#idade": "idade"
-        },
-        ExpressionAttributeValues: {
-          ":nome": nomeSan,
-          ":cargo": cargoSan,
-          ":idade": idadeSan
-        },
-        Limit: 1
-      })
-    );
-    const found = result.Items && result.Items.find(
-      (item) => String(item.nome).trim().toLowerCase() === nomeSan && String(item.cargo).trim().toLowerCase() === cargoSan && Number(item.idade) === idadeSan
-    );
-    return found ? found : null;
+    let lastKey = void 0;
+    do {
+      const page = await docClient.send(
+        new import_lib_dynamodb.ScanCommand({
+          TableName: this.employeeTableName,
+          // Reduz o volume filtrando por idade no servidor
+          FilterExpression: "#idade = :idade",
+          ExpressionAttributeNames: {
+            "#id": "id",
+            "#nome": "nome",
+            "#cargo": "cargo",
+            "#idade": "idade"
+          },
+          ExpressionAttributeValues: {
+            ":idade": idadeSan
+          },
+          ProjectionExpression: "#id, #nome, #cargo, #idade",
+          ExclusiveStartKey: lastKey
+        })
+      );
+      const items = page.Items ?? [];
+      const match = items.find(
+        (item) => String(item.nome).trim().toLowerCase() === nomeSan && String(item.cargo).trim().toLowerCase() === cargoSan && Number(item.idade) === idadeSan
+      );
+      if (match) return match;
+      lastKey = page.LastEvaluatedKey;
+    } while (lastKey);
+    return null;
   }
   async create(employeeData) {
     const sanitized = {

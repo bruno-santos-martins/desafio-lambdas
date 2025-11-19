@@ -1,0 +1,136 @@
+type: collection.insomnia.rest/5.0
+name: desafio
+meta:
+  id: wrk_69a482e1d39e4c0f8d741f88054fe96a
+  created: 1763507818885
+  modified: 1763507818885
+  description: ""
+collection:
+  - name: api
+    meta:
+      id: fld_a09de37ba17a4703883c79c42db2fe89
+      created: 1763508194698
+      modified: 1763508194698
+      sortKey: -1763508194698
+      description: ""
+    children:
+      - url: "{{ _.local }}/employees/9e0786cb-5100-422a-87c9-fc3ee0bb574c"
+        name: find
+        meta:
+          id: req_7a8680e42cb844e3ab043d4ff36bc3d5
+          created: 1763507841933
+          modified: 1763510169352
+          isPrivate: false
+          description: ""
+          sortKey: -1763508387821
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.local }}/employees"
+        name: create
+        meta:
+          id: req_ee666599873349d3ab978c9615a30c31
+          created: 1763508656177
+          modified: 1763510734823
+          isPrivate: false
+          description: ""
+          sortKey: -1763508656177
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "bruno",
+            	"cargo": "dev",
+            	"idade": "5"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.local }}/employees/ff16f9af-a258-4d23-bc5d-2880a618cc61"
+        name: update
+        meta:
+          id: req_1bd4c9f664d440fcbc390b01cbd68e75
+          created: 1763508788819
+          modified: 1763510174929
+          isPrivate: false
+          description: ""
+          sortKey: -1763508656277
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Abreu",
+            	"cargo": "dev",
+            	"idade": 5
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.local }}/employees/9e0786cb-5100-422a-87c9-fc3ee0bb574c"
+        name: New Request
+        meta:
+          id: req_edba0e055e264b2cb6de14544d8ea4b9
+          created: 1763508949161
+          modified: 1763510183520
+          isPrivate: false
+          description: ""
+          sortKey: -1763508949161
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_93add596dbf62697db9040f86e8560c2d0f91369
+    created: 1763507818889
+    modified: 1763507818889
+environments:
+  name: Base Environment
+  meta:
+    id: env_93add596dbf62697db9040f86e8560c2d0f91369
+    created: 1763507818887
+    modified: 1763509073737
+    isPrivate: false
+  data:
+    base: https://hqqeb364vl.execute-api.us-east-1.amazonaws.com
+    local: http://localhost:3000

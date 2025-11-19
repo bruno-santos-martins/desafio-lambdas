@@ -17,33 +17,43 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
 
   async findByNomeCargoIdade(nome: string, cargo: string, idade: number): Promise<Employee | null> {
     // Sanitiza os valores para busca
-    const nomeSan = nome.trim().toLowerCase();
-    const cargoSan = cargo.trim().toLowerCase();
+    const nomeSan = String(nome).trim().toLowerCase();
+    const cargoSan = String(cargo).trim().toLowerCase();
     const idadeSan = Number(idade);
-    const result = await docClient.send(
-      new ScanCommand({
-        TableName: this.employeeTableName,
-        FilterExpression: 'contains(#nome, :nome) AND contains(#cargo, :cargo) AND #idade = :idade',
-        ExpressionAttributeNames: {
-          '#nome': 'nome',
-          '#cargo': 'cargo',
-          '#idade': 'idade',
-        },
-        ExpressionAttributeValues: {
-          ':nome': nomeSan,
-          ':cargo': cargoSan,
-          ':idade': idadeSan,
-        },
-        Limit: 1,
-      })
-    );
-    
-    const found = result.Items && result.Items.find((item: any) =>
-      String(item.nome).trim().toLowerCase() === nomeSan &&
-      String(item.cargo).trim().toLowerCase() === cargoSan &&
-      Number(item.idade) === idadeSan
-    );
-    return found ? (found as Employee) : null;
+
+    let lastKey: Record<string, any> | undefined = undefined;
+    do {
+      const page = await docClient.send(
+        new ScanCommand({
+          TableName: this.employeeTableName,
+          // Reduz o volume filtrando por idade no servidor
+          FilterExpression: '#idade = :idade',
+          ExpressionAttributeNames: {
+            '#id': 'id',
+            '#nome': 'nome',
+            '#cargo': 'cargo',
+            '#idade': 'idade',
+          },
+          ExpressionAttributeValues: {
+            ':idade': idadeSan,
+          },
+          ProjectionExpression: '#id, #nome, #cargo, #idade',
+          ExclusiveStartKey: lastKey,
+        })
+      );
+
+      const items = page.Items ?? [];
+      const match = items.find((item: any) =>
+        String(item.nome).trim().toLowerCase() === nomeSan &&
+        String(item.cargo).trim().toLowerCase() === cargoSan &&
+        Number(item.idade) === idadeSan
+      );
+      if (match) return match as Employee;
+
+      lastKey = page.LastEvaluatedKey as any;
+    } while (lastKey);
+
+    return null;
   }
 
   async create(employeeData: Employee): Promise<Employee> {
