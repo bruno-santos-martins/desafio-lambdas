@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, GetCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import type Employee from '../../domain/entities/Employee';
 import EmployeeRepository, { type EmployeeUpdate } from '../../domain/repositories/EmployeeRepository';
 
@@ -15,16 +15,54 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
     this.employeeTableName = employeeTableName;
   }
 
+  async findByNomeCargoIdade(nome: string, cargo: string, idade: number): Promise<Employee | null> {
+    // Sanitiza os valores para busca
+    const nomeSan = nome.trim().toLowerCase();
+    const cargoSan = cargo.trim().toLowerCase();
+    const idadeSan = Number(idade);
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: this.employeeTableName,
+        FilterExpression: 'contains(#nome, :nome) AND contains(#cargo, :cargo) AND #idade = :idade',
+        ExpressionAttributeNames: {
+          '#nome': 'nome',
+          '#cargo': 'cargo',
+          '#idade': 'idade',
+        },
+        ExpressionAttributeValues: {
+          ':nome': nomeSan,
+          ':cargo': cargoSan,
+          ':idade': idadeSan,
+        },
+        Limit: 1,
+      })
+    );
+    
+    const found = result.Items && result.Items.find((item: any) =>
+      String(item.nome).trim().toLowerCase() === nomeSan &&
+      String(item.cargo).trim().toLowerCase() === cargoSan &&
+      Number(item.idade) === idadeSan
+    );
+    return found ? (found as Employee) : null;
+  }
+
   async create(employeeData: Employee): Promise<Employee> {
+    // Sanitiza antes de salvar
+    const sanitized: Employee = {
+      ...employeeData,
+      nome: String(employeeData.nome).trim().toLowerCase(),
+      cargo: String(employeeData.cargo).trim().toLowerCase(),
+      idade: Number(employeeData.idade),
+    };
     await docClient.send(
       new PutCommand({
         TableName: this.employeeTableName,
-        Item: employeeData,
+        Item: sanitized,
         ConditionExpression: 'attribute_not_exists(#id)',
         ExpressionAttributeNames: { '#id': 'id' },
       })
     );
-    return employeeData;
+    return sanitized;
   }
 
   async getById(employeeId: string): Promise<Employee | null> {
@@ -62,8 +100,8 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
       return await this.getById(employeeId);
     }
 
-    const result = await docClient
-      .update({
+    const result = await docClient.send(
+      new UpdateCommand({
         TableName: this.employeeTableName,
         Key: { id: employeeId },
         UpdateExpression: 'SET ' + updateExpressions.join(', '),
@@ -72,19 +110,19 @@ export default class DynamoEmployeeRepository extends EmployeeRepository {
         ConditionExpression: 'attribute_exists(#id)',
         ReturnValues: 'ALL_NEW',
       })
-      .promise();
+    );
 
     return result.Attributes as Employee;
   }
 
   async delete(employeeId: string): Promise<void> {
-    await docClient
-      .delete({
+    await docClient.send(
+      new DeleteCommand({
         TableName: this.employeeTableName,
         Key: { id: employeeId },
         ConditionExpression: 'attribute_exists(#id)',
         ExpressionAttributeNames: { '#id': 'id' },
       })
-      .promise();
+    );
   }
 }
