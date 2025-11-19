@@ -14,12 +14,12 @@ collection:
       sortKey: -1763508194698
       description: ""
     children:
-      - url: "{{ _.local }}/employees/9e0786cb-5100-422a-87c9-fc3ee0bb574c"
+      - url: "{{ _.local }}/employees/6909d890-cd9d-469c-99d9-64b45d18fe04"
         name: find
         meta:
           id: req_7a8680e42cb844e3ab043d4ff36bc3d5
           created: 1763507841933
-          modified: 1763510169352
+          modified: 1763513184694
           isPrivate: false
           description: ""
           sortKey: -1763508387821
@@ -40,7 +40,7 @@ collection:
         meta:
           id: req_ee666599873349d3ab978c9615a30c31
           created: 1763508656177
-          modified: 1763510734823
+          modified: 1763512662941
           isPrivate: false
           description: ""
           sortKey: -1763508656177
@@ -49,9 +49,9 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"nome": "bruno",
+            	"nome": "brussno 6",
             	"cargo": "dev",
-            	"idade": "5"
+            	"idade": "53"
             }
         headers:
           - name: Content-Type
@@ -66,21 +66,21 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.local }}/employees/ff16f9af-a258-4d23-bc5d-2880a618cc61"
+      - url: "{{ _.local }}/employees/9e0786cb-5100-422a-87c9-fc3ee0bb574c"
         name: update
         meta:
           id: req_1bd4c9f664d440fcbc390b01cbd68e75
           created: 1763508788819
-          modified: 1763510174929
+          modified: 1763511550414
           isPrivate: false
           description: ""
           sortKey: -1763508656277
-        method: PATCH
+        method: PUT
         body:
           mimeType: application/json
           text: |-
             {
-            	"nome": "Abreu",
+            	"nome": "Abre333u",
             	"cargo": "dev",
             	"idade": 5
             }
@@ -102,7 +102,7 @@ collection:
         meta:
           id: req_edba0e055e264b2cb6de14544d8ea4b9
           created: 1763508949161
-          modified: 1763510183520
+          modified: 1763511575189
           isPrivate: false
           description: ""
           sortKey: -1763508949161

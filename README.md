@@ -59,18 +59,33 @@ Camadas:
 - POST `/employees` — cria funcionário
 	- body: `{ "nome": string, "cargo": string, "idade": number }`
 	- 201 + objeto criado
+- GET `/employees` — lista todos os funcionários
+		- Suporta paginação via query string: `?page=1&limit=10` (valores padrão: page=1, limit=10)
+		- Resposta:
+			```json
+			{
+				"data": [ /* funcionários */ ],
+				"total": 100,
+				"page": 1,
+				"limit": 10,
+				"totalPages": 10
+			}
+			```
 - GET `/employees/{id}` — obtém funcionário por id
-	- 200 + objeto | 404 se não encontrado
+		- 200 + objeto | 404 se não encontrado
 - PUT `/employees/{id}` — atualiza campos parciais
 	- body: qualquer combinação de `{ "nome", "cargo", "idade" }`
 	- 200 + objeto atualizado | 404 se não encontrado
 - DELETE `/employees/{id}` — remove funcionário
 	- 204 (sem corpo) | 404 se não encontrado
 
-## Testes e Insomnia
+
+## Testes, Insomnia e Documentação OpenAPI
 - Testes unitários: os testes estão em `tests/employee.test.ts` (rodar com `yarn test`).
 - Coleção Insomnia: arquivo `Insomnia_2025-11-18.yaml` na raiz do projeto.
-  - Para usar: abra o Insomnia > Application > Preferences > Data > Import Data > From File e selecione o arquivo.
+	- Para usar: abra o Insomnia > Application > Preferences > Data > Import Data > From File e selecione o arquivo.
+- Documentação OpenAPI: arquivo `openapi.yaml` na raiz do projeto.
+	- Você pode importar esse arquivo em ferramentas como [Swagger UI](https://swagger.io/tools/swagger-ui/) ou [Redoc](https://redocly.com/) para visualizar e testar todos os endpoints, parâmetros e exemplos de requisição/resposta de forma interativa.
 
 ## Pré‑requisitos locais
 - Node.js 18+
