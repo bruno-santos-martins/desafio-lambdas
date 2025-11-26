@@ -20,7 +20,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     const employeeId = event.pathParameters && event.pathParameters.id;
     if (employeeId) {
       const fetchedEmployee = await getEmployee(employeeRepository, employeeId as string);
-      if (!fetchedEmployee) return response(404, { message: 'Funcionário não encontrado' });
+      if (!fetchedEmployee) return response(404, { message: 'Funcionário não encontrado com essas informações' });
       return response(200, fetchedEmployee);
     } else {
       // Paginação opcional via query string: ?page=1&limit=10

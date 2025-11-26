@@ -28453,7 +28453,7 @@ var handler = async (event) => {
     const employeeId = event.pathParameters && event.pathParameters.id;
     if (employeeId) {
       const fetchedEmployee = await getEmployee(employeeRepository, employeeId);
-      if (!fetchedEmployee) return response(404, { message: "Funcion\xE1rio n\xE3o encontrado" });
+      if (!fetchedEmployee) return response(404, { message: "Funcion\xE1rio n\xE3o encontrado com essas informa\xE7\xF5es" });
       return response(200, fetchedEmployee);
     } else {
       const page = event.queryStringParameters && event.queryStringParameters.page ? parseInt(event.queryStringParameters.page, 10) : 1;
