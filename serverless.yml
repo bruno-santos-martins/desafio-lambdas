@@ -25,6 +25,7 @@ provider:
       statements:
         - Effect: Allow
           Action:
+            - dynamodb:Scan
             - dynamodb:PutItem
             - dynamodb:GetItem
             - dynamodb:UpdateItem
