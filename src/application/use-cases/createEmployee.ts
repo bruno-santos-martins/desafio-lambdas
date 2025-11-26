@@ -25,7 +25,7 @@ export default async function createEmployee(
   // Verifica duplicidade com dados sanitizados
   const exists = await employeeRepository.findByNomeCargoIdade(nomeSan, cargoSan, idadeSan);
   if (exists) {
-    throw new Error('Já existe um funcionário cadastrado com mesmo nome, cargo e idade');
+    throw new Error('Já existe um funcionário cadastrado com mesmo nome, cargo e idade.');
   }
 
   const employeeId = employeeData.id || uuidv4();

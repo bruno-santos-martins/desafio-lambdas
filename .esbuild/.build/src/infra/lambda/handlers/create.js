@@ -28484,7 +28484,7 @@ async function createEmployee(employeeRepository, employeeData) {
   const idadeSan = Number(employeeData.idade);
   const exists = await employeeRepository.findByNomeCargoIdade(nomeSan, cargoSan, idadeSan);
   if (exists) {
-    throw new Error("J\xE1 existe um funcion\xE1rio cadastrado com mesmo nome, cargo e idade");
+    throw new Error("J\xE1 existe um funcion\xE1rio cadastrado com mesmo nome, cargo e idade.");
   }
   const employeeId = employeeData.id || v4_default();
   const newEmployee = new Employee({
